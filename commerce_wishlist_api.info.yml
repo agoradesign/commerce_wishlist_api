@@ -1,0 +1,9 @@
+name: 'Commerce Wishlist API'
+type: module
+description: 'Provides a RESTful interface to interact with wishlists in Drupal Commerce via a lightweight public API.'
+package: 'Commerce (contrib)'
+dependencies:
+  - commerce:commerce
+  - commerce:commerce_wishlist
+  - serialization
+  - rest
