@@ -27,7 +27,7 @@ function commerce_wishlist_api_entity_field_access($operation, FieldDefinitionIn
       $allowed_fields = [
         'wishlist_id',
         'uuid',
-        'store_id',
+        'name',
         'wishlist_items',
       ];
     }
