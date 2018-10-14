@@ -10,6 +10,6 @@
     "issues": "https://www.drupal.org/project/issues/commerce_wishlist_api"
   },
   "require": {
-      "drupal/commerce": "^2.10"
+    "drupal/commerce_wishlist": "^3.0"
   }
 }

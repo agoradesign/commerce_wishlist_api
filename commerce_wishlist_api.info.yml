@@ -4,6 +4,6 @@ description: 'Provides a RESTful interface to interact with wishlists in Drupal 
 package: 'Commerce (contrib)'
 dependencies:
   - commerce:commerce
-  - commerce:commerce_wishlist
+  - commerce_wishlist:commerce_wishlist
   - serialization
   - rest
