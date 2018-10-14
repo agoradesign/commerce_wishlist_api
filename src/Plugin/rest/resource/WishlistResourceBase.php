@@ -8,6 +8,9 @@ use Drupal\rest\Plugin\ResourceBase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Abstract base class for wishlist resoruces.
+ */
 abstract class WishlistResourceBase extends ResourceBase {
 
   /**
@@ -44,6 +47,7 @@ abstract class WishlistResourceBase extends ResourceBase {
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, array $serializer_formats, LoggerInterface $logger, WishlistProviderInterface $wishlist_provider, WishlistManagerInterface $wishlist_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
+
     $this->wishlistProvider = $wishlist_provider;
     $this->wishlistManager = $wishlist_manager;
   }

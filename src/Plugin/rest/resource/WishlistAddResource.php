@@ -17,8 +17,6 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 /**
  * Creates wishlist items for the session's wishlists.
  *
- * @todo Currently hardcoded to support product variations only.
- *
  * @RestResource(
  *   id = "commerce_wishlist_add",
  *   label = @Translation("Wishlist add"),
@@ -58,7 +56,7 @@ class WishlistAddResource extends WishlistResourceBase {
   protected $currentStore;
 
   /**
-   * Constructs a new WishlistAddItemsResource object.
+   * Constructs a new WishlistAddResource object.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
