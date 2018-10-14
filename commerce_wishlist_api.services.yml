@@ -1,11 +1,15 @@
 services:
   commerce_wishlist_api.normalizer.field_item:
     class: Drupal\commerce_wishlist_api\Normalizer\FieldItemNormalizer
+    arguments:
+      - '@current_route_match'
     tags:
       - { name: normalizer, priority: 8 }
 
   commerce_wishlist_api.normalizer.field:
     class: Drupal\commerce_wishlist_api\Normalizer\FieldNormalizer
+    arguments:
+      - '@current_route_match'
     tags:
       - { name: normalizer, priority: 9 }
 
@@ -13,6 +17,7 @@ services:
     class: Drupal\commerce_wishlist_api\Normalizer\WishlistItemsNormalizer
     arguments:
       - '@entity.repository'
+      - '@current_route_match'
     tags:
       - { name: normalizer, priority: 9 }
 
@@ -20,6 +25,7 @@ services:
     class: Drupal\commerce_wishlist_api\Normalizer\PurchasableEntityNormalizer
     arguments:
       - '@entity.repository'
+      - '@current_route_match'
     tags:
       - { name: normalizer, priority: 9 }
 
