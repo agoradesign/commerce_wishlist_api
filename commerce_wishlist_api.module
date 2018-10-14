@@ -23,30 +23,22 @@ function commerce_wishlist_api_entity_field_access($operation, FieldDefinitionIn
   $entity_type_id = $field_definition->getTargetEntityTypeId();
   $field_name = $field_definition->getName();
   if ($operation == 'view') {
-    if ($entity_type_id == 'commerce_order') {
+    if ($entity_type_id == 'commerce_wishlist') {
       $allowed_fields = [
-        'order_id',
+        'wishlist_id',
         'uuid',
-        'order_number',
         'store_id',
-        // Allow after https://www.drupal.org/project/commerce/issues/2916252.
-        // 'adjustments',
-        'total_price',
-        'order_items',
+        'wishlist_items',
       ];
     }
-    elseif ($entity_type_id == 'commerce_order_item') {
+    elseif ($entity_type_id == 'commerce_wishlist_item') {
       $allowed_fields = [
-        'order_id',
-        'order_item_id',
+        'wishlist_id',
+        'wishlist_item_id',
         'uuid',
-        'purchased_entity',
+        'purchasable_entity',
         'title',
-        // Allow after https://www.drupal.org/project/commerce/issues/2916252.
-        // 'adjustments',
         'quantity',
-        'unit_price',
-        'total_price',
       ];
     }
     else {
