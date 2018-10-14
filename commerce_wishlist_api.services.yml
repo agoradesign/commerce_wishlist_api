@@ -9,20 +9,23 @@ services:
     tags:
       - { name: normalizer, priority: 9 }
 
-  commerce_wishlist_api.normalizer.order_items:
-    class: Drupal\commerce_wishlist_api\Normalizer\OrderItemsNormalizer
-    arguments: ['@entity.repository']
+  commerce_wishlist_api.normalizer.wishlist_items:
+    class: Drupal\commerce_wishlist_api\Normalizer\WishlistItemsNormalizer
+    arguments:
+      - '@entity.repository'
     tags:
       - { name: normalizer, priority: 9 }
 
   commerce_wishlist_api.normalizer.purchasable_entity:
     class: Drupal\commerce_wishlist_api\Normalizer\PurchasableEntityNormalizer
-    arguments: ['@entity.repository']
+    arguments:
+      - '@entity.repository'
     tags:
       - { name: normalizer, priority: 9 }
 
-  access_check.cart_api:
-    class: Drupal\commerce_wishlist_api\Access\CartApiAccessCheck
-    arguments: ['@commerce_cart.cart_provider']
+  access_check.wishlist_api:
+    class: Drupal\commerce_wishlist_api\Access\WishlistApiAccessCheck
+    arguments:
+      - '@commerce_wishlist.wishlist_provider'
     tags:
-      - { name: access_check, applies_to: _cart_api }
+      - { name: access_check, applies_to: _wishlist_api }
