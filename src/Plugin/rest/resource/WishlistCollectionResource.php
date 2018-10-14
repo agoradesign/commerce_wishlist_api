@@ -32,7 +32,6 @@ class WishlistCollectionResource extends WishlistResourceBase {
       $response->addCacheableDependency($wishlist);
     }
     $response->getCacheableMetadata()->addCacheContexts([
-      'store',
       'wishlist',
     ]);
     return $response;

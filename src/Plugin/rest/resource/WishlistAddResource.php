@@ -3,7 +3,6 @@
 namespace Drupal\commerce_wishlist_api\Plugin\rest\resource;
 
 use Drupal\commerce\PurchasableEntityInterface;
-use Drupal\commerce_store\CurrentStoreInterface;
 use Drupal\commerce_wishlist\Resolver\ChainWishlistTypeResolverInterface;
 use Drupal\commerce_wishlist\WishlistManagerInterface;
 use Drupal\commerce_wishlist\WishlistProviderInterface;
@@ -35,7 +34,7 @@ class WishlistAddResource extends WishlistResourceBase {
   protected $entityTypeManager;
 
   /**
-   * The wishlist item store.
+   * The wishlist item storage.
    *
    * @var \Drupal\commerce_wishlist\WishlistItemStorageInterface
    */
@@ -47,13 +46,6 @@ class WishlistAddResource extends WishlistResourceBase {
    * @var \Drupal\commerce_wishlist\Resolver\ChainWishlistTypeResolverInterface
    */
   protected $chainWishlistTypeResolver;
-
-  /**
-   * The current store.
-   *
-   * @var \Drupal\commerce_store\CurrentStoreInterface
-   */
-  protected $currentStore;
 
   /**
    * Constructs a new WishlistAddResource object.
@@ -76,18 +68,16 @@ class WishlistAddResource extends WishlistResourceBase {
    *   The entity type manager.
    * @param \Drupal\commerce_wishlist\Resolver\ChainWishlistTypeResolverInterface $chain_wishlist_type_resolver
    *   The chain wishlist type resolver.
-   * @param \Drupal\commerce_store\CurrentStoreInterface $current_store
-   *   The current store.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, array $serializer_formats, LoggerInterface $logger, WishlistProviderInterface $wishlist_provider, WishlistManagerInterface $wishlist_manager, EntityTypeManagerInterface $entity_type_manager, ChainWishlistTypeResolverInterface $chain_wishlist_type_resolver, CurrentStoreInterface $current_store) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, array $serializer_formats, LoggerInterface $logger, WishlistProviderInterface $wishlist_provider, WishlistManagerInterface $wishlist_manager, EntityTypeManagerInterface $entity_type_manager, ChainWishlistTypeResolverInterface $chain_wishlist_type_resolver) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger, $wishlist_provider, $wishlist_manager);
 
     $this->entityTypeManager = $entity_type_manager;
     $this->wishlistItemStorage = $entity_type_manager->getStorage('commerce_wishlist_item');
     $this->chainWishlistTypeResolver = $chain_wishlist_type_resolver;
-    $this->currentStore = $current_store;
   }
 
   /**
@@ -103,8 +93,7 @@ class WishlistAddResource extends WishlistResourceBase {
       $container->get('commerce_wishlist.wishlist_provider'),
       $container->get('commerce_wishlist.wishlist_manager'),
       $container->get('entity_type.manager'),
-      $container->get('commerce_wishlist.chain_wishlist_type_resolver'),
-      $container->get('commerce_store.current_store')
+      $container->get('commerce_wishlist.chain_wishlist_type_resolver')
     );
   }
 
@@ -147,52 +136,15 @@ class WishlistAddResource extends WishlistResourceBase {
       ]);
 
       $wishlist_type_id = $this->chainWishlistTypeResolver->resolve($wishlist_item);
-      $store = $this->selectStore($purchasable_entity);
-      $wishlist = $this->wishlistProvider->getWishlist($wishlist_type_id, $store);
+      $wishlist = $this->wishlistProvider->getWishlist($wishlist_type_id);
       if (!$wishlist) {
-        $wishlist = $this->wishlistProvider->createWishlist($wishlist_type_id, $store);
+        $wishlist = $this->wishlistProvider->createWishlist($wishlist_type_id);
       }
       $wishlist_items[] = $this->wishlistManager->addWishlistItem($wishlist, $wishlist_item, TRUE);
     }
 
     $response = new ModifiedResourceResponse(array_values($wishlist_items), 200);
     return $response;
-  }
-
-  /**
-   * Selects the store for the given purchasable entity.
-   *
-   * If the entity is sold from one store, then that store is selected.
-   * If the entity is sold from multiple stores, and the current store is
-   * one of them, then that store is selected.
-   *
-   * @param \Drupal\commerce\PurchasableEntityInterface $entity
-   *   The entity being added to wishlist.
-   *
-   * @throws \Exception
-   *   When the entity can't be purchased from the current store.
-   *
-   * @return \Drupal\commerce_store\Entity\StoreInterface
-   *   The selected store.
-   */
-  protected function selectStore(PurchasableEntityInterface $entity) {
-    $stores = $entity->getStores();
-    if (count($stores) === 1) {
-      $store = reset($stores);
-    }
-    elseif (count($stores) === 0) {
-      // Malformed entity.
-      throw new \Exception('The given entity is not assigned to any store.');
-    }
-    else {
-      $store = $this->currentStore->getStore();
-      if (!in_array($store, $stores)) {
-        // Indicates that the site listings are not filtered properly.
-        throw new \Exception("The given entity can't be purchased from the current store.");
-      }
-    }
-
-    return $store;
   }
 
 }
